@@ -191,7 +191,6 @@ rem ============================================================================
 if %DO_CLEAN%==true (
     echo %FILE_N% Removing intermediate build.
     rmdir /S /Q "!BUILD_FOLDER!"
-    goto :eof
 )
 
 rem ==============================================================================
@@ -324,7 +323,6 @@ for %%i in (%PACKAGES%) do (
     if %DO_CLEAN%==true (
         echo %FILE_N% Removing intermediate build.
         rmdir /S /Q "!BUILD_FOLDER!"
-        goto :eof
     )
   )
 )

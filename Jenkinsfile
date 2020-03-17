@@ -137,8 +137,15 @@ pipeline
                                     git push
                                 '''
                             }
+                            post
+                            {
+                                always
+                                {
+                                    deleteDir()
+                                }
+                            }
                         }
-                        stage('Cleanning')
+                        stage('Cleaning')
                         {
                             steps
                             {
@@ -147,95 +154,99 @@ pipeline
                         }
                     }
                 }
-                // stage('windows')
-                // {
-                //     agent { label 'windows && build' }
-                //     environment
-                //     {
-                //         UE4_ROOT = 'C:\\Program Files\\Epic Games\\UE_4.22'
-                //     }
-                //     stages
-                //     {
-                //         stage('windows setup')
-                //         {
-                //             steps
-                //             {
-                //                 bat """
-                //                     call ../setEnv64.bat
-                //                     make setup
-                //                 """
-                //             }
-                //         }
-                //         stage('windows build')
-                //         {
-                //             steps
-                //             {
-                //                 bat """
-                //                     call ../setEnv64.bat
-                //                     make LibCarla
-                //                     make PythonAPI
-                //                     make CarlaUE4Editor
-                //                 //     make examples
-                //                 // """
-                //             }
-                //             post
-                //             {
-                //                 always
-                //                 {
-                //                     archiveArtifacts 'PythonAPI/carla/dist/*.egg'
-                //                     stash includes: 'PythonAPI/carla/dist/*.egg', name: 'windows_eggs'
-                //                 }
-                //             }
-                //         }
-                //         // stage('windows unit tests')
-                //         // {
-                //         //     steps { bat 'rem Not Implemented'}
-                //         // }
-                //         stage('windows retrieve content')
-                //         {
-                //             steps
-                //             {
-                //                 bat """
-                //                     call ../setEnv64.bat
-                //                     call Update.bat
-                //                 """
-                //             }
-                //         }
-                //         stage('windows package')
-                //         {
-                //             steps
-                //             {
-                //                 bat """
-                //                     call ../setEnv64.bat
-                //                     make package
-                //                     make package ARGS="--packages=AdditionalMaps --clean-intermediate"
-                //                 """
-                //                     // make examples ARGS="localhost 3654"
-                //             }
-                //             post {
-                //                 always {
-                //                     archiveArtifacts 'Build/UE4Carla/*.zip'
-                //                     // stash includes: 'Build/UE4Carla/CARLA*.zip', name: 'windows_package'
-                //                     // stash includes: 'Examples/', name: 'windows_examples'
-                //                 }
-                //             }
-                //         }
-                //         // stage('windows smoke test')
-                //         // {
-                //         //     steps { bat 'rem Not Implemented'}
-                //         // }
-                //         stage('windows deploy')
-                //         {
-                //             when { anyOf { branch "master"; buildingTag() } }
-                //             steps {
-                //                 bat """
-                //                     call ../setEnv64.bat
-                //                     make deploy ARGS="--replace-latest"
-                //                 """
-                //             }
-                //         }
-                //     }
-                // }
+                stage('windows')
+                {
+                    agent { label 'windows && build' }
+                    environment
+                    {
+                        UE4_ROOT = 'C:\\Program Files\\Epic Games\\UE_4.22'
+                    }
+                    stages
+                    {
+                        stage('windows setup')
+                        {
+                            steps
+                            {
+                                bat """
+                                    call ../setEnv64.bat
+                                    make setup
+                                """
+                            }
+                        }
+                        stage('windows build')
+                        {
+                            steps
+                            {
+                                bat """
+                                    call ../setEnv64.bat
+                                    make LibCarla
+                                    make PythonAPI
+                                    make CarlaUE4Editor
+                                """
+                                // make examples
+                            }
+                            post
+                            {
+                                always
+                                {
+                                    archiveArtifacts 'PythonAPI/carla/dist/*.egg'
+                                    stash includes: 'PythonAPI/carla/dist/*.egg', name: 'windows_eggs'
+                                }
+                            }
+                        }
+                        // stage('windows unit tests')
+                        // {
+                        //     steps { bat 'rem Not Implemented'}
+                        // }
+                        stage('windows retrieve content')
+                        {
+                            steps
+                            {
+                                bat """
+                                    call ../setEnv64.bat
+                                    call Update.bat
+                                """
+                            }
+                        }
+                        stage('windows package')
+                        {
+                            steps
+                            {
+                                bat """
+                                    call ../setEnv64.bat
+                                    make package
+                                    make package ARGS="--packages=AdditionalMaps --clean"
+                                """
+                                // make examples ARGS="localhost 3654"
+                            }
+                            post {
+                                always {
+                                    archiveArtifacts 'Build/UE4Carla/*.zip'
+                                    // stash includes: 'Build/UE4Carla/CARLA*.zip', name: 'windows_package'
+                                    // stash includes: 'Examples/', name: 'windows_examples'
+                                }
+                            }
+                        }
+                        // stage('windows smoke test')
+                        // {
+                        //     steps { bat 'rem Not Implemented'}
+                        // }
+                        stage('windows deploy')
+                        {
+                            when { anyOf { branch "master"; buildingTag() } }
+                            steps {
+                                bat """
+                                    call ../setEnv64.bat
+                                    make deploy ARGS="--replace-latest"
+                                """
+                            }
+                        }
+                    }
+                    post 
+                    {
+                        always { deleteDir() }
+                    }
+                }
             }
         }
     }
