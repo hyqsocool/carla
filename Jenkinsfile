@@ -34,7 +34,7 @@ pipeline
                     agent { label "ubuntu && build && ${JOB_ID}" }
                     environment
                     {
-                        UE4_ROOT = '/home/jenkins/UnrealEngine_4.22'
+                        UE4_ROOT = '/home/jenkins/UnrealEngine_4.24'
                     }
                     stages
                     {
@@ -175,7 +175,7 @@ pipeline
                 //     agent { label "windows && build && ${JOB_ID}" }
                 //     environment
                 //     {
-                //         UE4_ROOT = 'C:\\Program Files\\Epic Games\\UE_4.22'
+                //         UE4_ROOT = 'C:\\Program Files\\Epic Games\\UE_4.24'
                 //     }
                 //     stages
                 //     {
